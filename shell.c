@@ -511,71 +511,66 @@ void run_program(char *args[], int background, char *stdout_fn,
 }
 
 
+char * format_current_time(){
+        
+        time_t current_time;
+        struct tm* time_info;
+        char* time_string = (char*)malloc(13);
+
+        if (time_string == NULL) exit(1);
+
+        time(&current_time);
+        time_info = localtime(&current_time);
+        strftime(time_string, 13, " (%H:%M:%S)", time_info); 
+
+        return time_string;
+}
+
 
 void prompt_loop(char *username, char *path, char *envp[])
 
 {
 
         char buffer[BUFFER_SIZE];
-
         char *args[ARR_SIZE];
-
-        
-
         int background;
-
         size_t nargs;
-
         char *s;
-
         int i, j;
-
         char *stdout_fn;
+        char *prompt;
+        prompt = (char *)malloc(strlen(username) + 14);
 
-        
+        if (prompt == NULL) exit(1);
 
         while(1){
 
-                printf("%s %s ", username, find_env("MYPROMPT", "$", envp));
+                strcpy(prompt, username);
+                printf("%s %s ", strcat(prompt, format_current_time()), find_env("MYPROMPT", "$", envp));
 
                 s = fgets(buffer, BUFFER_SIZE, stdin);
 
-                
-
-                if (s == NULL) {
-
-                        /* we reached EOF */
+                if (s == NULL) {/* we reached EOF */
 
                         printf("\n");
-
+                        free(prompt);
                         exit(0);
-
                 }
-
-                
 
                 parse_args(buffer, args, ARR_SIZE, &nargs); 
 
-                
-
                 if (nargs==0) continue;
 
-                
-
                 if (!strcmp(args[0], "exit")) {
-
+                        free(prompt);
                         exit(0);
-
                 }
-
-                
 
                 if (!strcmp(args[0], "plist")) {
 
                         plist();
 
                         continue;
-
                 }
 
                 if (!strcmp(args[0], "unset")) {
@@ -583,13 +578,7 @@ void prompt_loop(char *username, char *path, char *envp[])
                         unset(args[1]);
 
                         continue;
-
                 }
-
-
-		
-
-
 
                 background = 0;            
 
@@ -600,18 +589,13 @@ void prompt_loop(char *username, char *path, char *envp[])
                         nargs--;
 
                         args[nargs] = NULL;
-
                 }
-
-
 
                 stdout_fn = NULL;
 
                 for (i = 1; i < nargs; i++) {
 
                         if (args[i][0] == '>'){
-
-		                
 
 		                stdout_fn = args[i] + 1;
 
@@ -697,40 +681,11 @@ int main(int argc, char *argv[], char *envp[])
 
         
 
-        username = find_env("USER", default_username, envp);
-
+        username = find_env("USER", default_username, envp);        
         
-
-        time_t current_time;
-
-	struct tm* time_info;
-
-	char time_string[12];
-
-
-
-    	time(&current_time);
-
-    	time_info = localtime(&current_time);
-
-
-
-     	strftime(time_string, sizeof(time_string), " (%H:%M:%S)", time_info);
-
-        
-
-        strcat(username, time_string);
-
-        
-
         path = find_env("PATH", default_path, envp);
-
-
-
+        
         prompt_loop(username, path, envp);
 
-        
-
         return 0;
-
 }
