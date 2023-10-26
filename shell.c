@@ -410,7 +410,6 @@ void signal_handler(int the_signal)
         
 
         if (WIFEXITED(status)) {
-
                 fprintf(stderr, "\nProcess %d exited with status %d.\n",
 
                         pid, WEXITSTATUS(status));
