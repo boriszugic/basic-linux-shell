@@ -358,6 +358,11 @@ void plist()
 
 }
 
+void unset(char *env_var){
+
+        unsetenv(env_var);
+
+}
 
 
 void signal_handler(int the_signal)
@@ -454,6 +459,8 @@ void run_program(char *args[], int background, char *stdout_fn,
 
         } else {
 
+                
+                
                 find_binary(args[0], path, bin_fn, BUFFER_SIZE);
 
 
@@ -572,6 +579,13 @@ void prompt_loop(char *username, char *path, char *envp[])
 
                 }
 
+                if (!strcmp(args[0], "unset")) {
+
+                        unset(args[1]);
+
+                        continue;
+
+                }
 
 
 		
