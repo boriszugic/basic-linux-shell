@@ -1,7 +1,6 @@
 # Basic Linux Shell
 
 ### Description
-
 Basic Linux shell program designed for educational purposes. It provides a simple command-line interface for executing commands, managing processes, and working with environment variables.
 
 ### Features
